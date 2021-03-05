@@ -8,10 +8,11 @@ WORKDIR /src/jainishshah17/tugger/
 COPY ./ /src/jainishshah17/tugger/
 
 # Build microservices
-RUN cd cmd/tugger && go install
+RUN cd cmd/tugger && \
+	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o /go/bin/tugger
 
 # Runnable image
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM gcr.io/distroless/static
 
 # Copy microservice executable from builder image
 COPY --from=builder /go/bin/tugger /
